@@ -20,6 +20,7 @@
     .draggable {
         cursor: grab;
         touch-action: none;
+        user-select: none; /* Prevents text highlighting on double-click */
     }
     .draggable:active {
         cursor: grabbing;
@@ -139,22 +140,19 @@
         osc.stop(audioCtx.currentTime + 0.3);
     }
 
-    const imgClasses = "w-full h-full object-contain pointer-events-none";
-    const imgStyle = "transform: scale(3.5);";
-    
     const foods = [
-        { name: "Rice", group: "Grains", img: `<img src="1.png" alt="Rice" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Broccoli", group: "Vegetables", img: `<img src="2.png" alt="Broccoli" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Banana", group: "Fruits", img: `<img src="3.png" alt="Banana" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Fish", group: "Proteins", img: `<img src="4.png" alt="Fish" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Yogurt", group: "Dairy", img: `<img src="5.png" alt="Yogurt" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Almonds", group: "Nuts", img: `<img src="6.png" alt="Almonds" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Peanuts", group: "Nuts", img: `<img src="7.png" alt="Peanuts" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Steak", group: "Proteins", img: `<img src="8.png" alt="Steak" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Apple", group: "Fruits", img: `<img src="9.png" alt="Apple" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Cabbage", group: "Vegetables", img: `<img src="10.png" alt="Cabbage" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Potato", group: "Vegetables", img: `<img src="11.png" alt="Potato" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Corn", group: "Vegetables", img: `<img src="12.png" alt="Corn" class="${imgClasses}" style="${imgStyle}">` }
+        { name: "Rice", group: "Grains", file: "1.png" },
+        { name: "Broccoli", group: "Vegetables", file: "2.png" },
+        { name: "Banana", group: "Fruits", file: "3.png" },
+        { name: "Fish", group: "Proteins", file: "4.png" },
+        { name: "Yogurt", group: "Dairy", file: "5.png" },
+        { name: "Almonds", group: "Nuts", file: "6.png" },
+        { name: "Peanuts", group: "Nuts", file: "7.png" },
+        { name: "Steak", group: "Proteins", file: "8.png" },
+        { name: "Apple", group: "Fruits", file: "9.png" },
+        { name: "Cabbage", group: "Vegetables", file: "10.png" },
+        { name: "Potato", group: "Vegetables", file: "11.png" },
+        { name: "Corn", group: "Vegetables", file: "12.png" }
     ];
 
     const pool = document.getElementById('food-pool');
@@ -176,11 +174,13 @@
             el.className = 'draggable bg-white rounded-[2rem] shadow-xl border-4 border-gray-200 flex flex-col items-center relative touch-none transition-transform hover:scale-105 overflow-hidden w-36 h-40 sm:w-40 sm:h-44 shrink-0';
             el.dataset.group = food.group;
             
+            // THE FIX: We use a CSS background image instead of an HTML <img> tag.
+            // background-size: 350% handles the zoom completely safely, immune to double-click explosions!
             el.innerHTML = `
-                <div class="w-full flex-grow flex items-center justify-center overflow-hidden pt-4 pb-2">
-                    ${food.img}
+                <div class="w-full flex-grow flex items-center justify-center pt-4 pb-2 relative pointer-events-none">
+                    <div class="absolute inset-0" style="background-image: url('${food.file}'); background-size: 350%; background-position: center; background-repeat: no-repeat; mix-blend-mode: multiply;"></div>
                 </div>
-                <div class="w-full text-center pb-3 pt-1 bg-white z-10 relative">
+                <div class="w-full text-center pb-3 pt-1 bg-white z-10 relative pointer-events-none">
                     <span class="food-text font-bold text-gray-800 text-2xl sm:text-3xl">${food.name}</span>
                 </div>
             `;
@@ -248,7 +248,8 @@
                 } else {
                     document.body.removeChild(el);
                     pool.appendChild(el);
-                    // The fix: clear the inline styles completely instead of setting them to "auto"
+                    
+                    // Resets perfectly back into the flex grid
                     el.style.position = '';
                     el.style.left = '';
                     el.style.top = '';
@@ -256,6 +257,9 @@
                     el.style.height = '';
                 }
             });
+            
+            // Extra safety to prevent double-click native browser selection behavior
+            el.addEventListener('dblclick', (e) => e.preventDefault());
         });
     }
 
