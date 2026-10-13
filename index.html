@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Making a Healthy Plate</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Source Code Pro', monospace;
+        background-color: #f0fdf4;
+        touch-action: none; 
+        overflow: hidden;
+    }
+    .food-text {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    .draggable {
+        cursor: grab;
+        touch-action: none;
+    }
+    .draggable:active {
+        cursor: grabbing;
+    }
+    #nutrition-panel {
+        display: none;
+    }
+    #nutrition-panel.show {
+        display: flex;
+        animation: slideUp 0.4s ease-out forwards;
+    }
+    @keyframes slideUp {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+</head>
+<body class="h-[100dvh] w-screen flex flex-col items-center justify-between py-4 select-none">
+
+    <div class="w-full max-w-4xl px-4 flex justify-between items-center mb-2 z-10">
+        <h1 class="text-2xl md:text-3xl font-bold text-green-800">Making a Healthy Plate</h1>
+        <button id="check-btn" class="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-600 active:scale-95 transition-all">
+            Check My Plate!
+        </button>
+    </div>
+
+    <!-- The Plate Area -->
+    <div id="plate-container" class="relative w-full max-w-3xl flex-grow flex items-center justify-center border-4 border-dashed border-gray-300 rounded-3xl bg-white shadow-inner mx-4 overflow-visible">
+        <!-- SVG Bento Box Graphic -->
+        <div class="absolute inset-0 w-full h-full p-4 pointer-events-none">
+            <svg viewBox="0 0 800 600" class="w-full h-full drop-shadow-md">
+                <rect x="150" y="150" width="550" height="400" rx="40" fill="#ffffff" stroke="#4b5563" stroke-width="12"/>
+                <rect x="170" y="230" width="120" height="300" rx="30" fill="#f97316" stroke="#c2410c" stroke-width="6"/>
+                <rect x="310" y="210" width="130" height="310" rx="30" fill="#84cc16" stroke="#4d7c0f" stroke-width="6"/>
+                <rect x="460" y="170" width="220" height="150" rx="30" fill="#ec4899" stroke="#be185d" stroke-width="6"/>
+                <rect x="470" y="340" width="210" height="180" rx="30" fill="#eab308" stroke="#a16207" stroke-width="6"/>
+                <circle cx="430" cy="330" r="25" fill="#f3f4f6" stroke="#9ca3af" stroke-width="8"/>
+                <circle cx="150" cy="190" r="80" fill="#38bdf8" stroke="#0284c7" stroke-width="8"/>
+                <circle cx="150" cy="190" r="60" fill="none" stroke="#e0f2fe" stroke-width="4"/>
+                <circle cx="390" cy="110" r="75" fill="#d4a373" stroke="#8b5a2b" stroke-width="8"/>
+                <circle cx="390" cy="110" r="55" fill="none" stroke="#faedcd" stroke-width="4"/>
+                <line x1="720" y1="160" x2="750" y2="480" stroke="#4b5563" stroke-width="14" stroke-linecap="round"/>
+                <line x1="750" y1="160" x2="780" y2="480" stroke="#4b5563" stroke-width="14" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <!-- Error Message overlay -->
+        <div id="error-msg" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-100 text-red-700 px-6 py-3 rounded-xl font-bold opacity-0 transition-opacity duration-300 pointer-events-none z-50 shadow-lg border-2 border-red-300">
+            Plate is empty!
+        </div>
+    </div>
+
+    <!-- Food Pool -->
+    <div id="food-pool" class="w-full h-48 bg-orange-50 border-t-4 border-orange-200 p-4 flex flex-wrap justify-center items-center gap-4 overflow-visible relative z-20 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)]">
+        <!-- Foods generated here -->
+    </div>
+
+    <!-- Nutrition Goals Panel (Hidden initially) -->
+    <div id="nutrition-panel" class="absolute bottom-0 w-full bg-white border-t-8 border-green-500 p-6 flex-col items-center justify-center z-50 rounded-t-3xl shadow-[0_-20px_25px_-5px_rgba(0,0,0,0.15)] h-auto max-h-[60dvh]">
+        <h2 class="text-2xl font-bold text-green-700 mb-4">Nutrition Checklist</h2>
+        <div id="checklist" class="w-full max-w-md grid grid-cols-2 gap-4 mb-6">
+            <div class="flex items-center space-x-3 text-lg"><div id="check-Grains" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold"></div><span>Grains</span></div>
+            <div class="flex items-center space-x-3 text-lg"><div id="check-Vegetables" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold"></div><span>Vegetables</span></div>
+            <div class="flex items-center space-x-3 text-lg"><div id="check-Fruits" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold"></div><span>Fruits</span></div>
+            <div class="flex items-center space-x-3 text-lg"><div id="check-Proteins" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold"></div><span>Proteins</span></div>
+            <div class="flex items-center space-x-3 text-lg"><div id="check-Dairy" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold"></div><span>Dairy</span></div>
+            <div class="flex items-center space-x-3 text-lg"><div id="check-Nuts" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold"></div><span>Nuts</span></div>
+        </div>
+        <div class="flex gap-4">
+            <button id="save-btn" class="bg-purple-500 text-white px-6 py-3 rounded-xl font-bold text-lg shadow hover:bg-purple-600 transition-colors">Save Picture</button>
+            <button id="reset-btn" class="bg-gray-500 text-white px-6 py-3 rounded-xl font-bold text-lg shadow hover:bg-gray-600 transition-colors">Build Another Plate</button>
+        </div>
+    </div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playDing() {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    const foods = [
+        { name: "Rice", group: "Grains", img: '<svg viewBox="0 0 100 100" class="w-16 h-16"><circle cx="50" cy="60" r="35" fill="#f3f4f6" stroke="#d1d5db" stroke-width="4"/><path d="M20,60 Q50,20 80,60" fill="#ffffff" stroke="#d1d5db" stroke-width="4"/></svg>' },
+        { name: "Broccoli", group: "Vegetables", img: '<img src="2.png" alt="Broccoli" class="w-16 h-16 object-contain pointer-events-none">' },
+        { name: "Banana", group: "Fruits", img: '<img src="3.png" alt="Banana" class="w-16 h-16 object-contain pointer-events-none">' },
+        { name: "Fish", group: "Proteins", img: '<svg viewBox="0 0 100 100" class="w-16 h-16"><ellipse cx="50" cy="50" rx="40" ry="20" fill="#e5e7eb" stroke="#9ca3af" stroke-width="3"/><polygon points="85,50 95,35 95,65" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/></svg>' },
+        { name: "Yogurt", group: "Dairy", img: '<svg viewBox="0 0 100 100" class="w-16 h-16"><path d="M30,30 L70,30 L60,80 L40,80 Z" fill="#eff6ff" stroke="#60a5fa" stroke-width="4"/><ellipse cx="50" cy="30" rx="20" ry="10" fill="#ffffff" stroke="#60a5fa" stroke-width="4"/></svg>' },
+        { name: "Peanuts", group: "Nuts", img: '<img src="7.jpg" alt="Peanuts" class="w-16 h-16 object-contain pointer-events-none rounded-full">' },
+        { name: "Apple", group: "Fruits", img: '<svg viewBox="0 0 100 100" class="w-16 h-16"><circle cx="50" cy="55" r="30" fill="#ef4444" stroke="#b91c1c" stroke-width="4"/><path d="M50,25 Q60,10 70,20 Q60,30 50,25" fill="#22c55e"/></svg>' }
+    ];
+
+    const pool = document.getElementById('food-pool');
+    const plateContainer = document.getElementById('plate-container');
+    const plateRect = plateContainer.getBoundingClientRect();
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function initGame() {
+        pool.innerHTML = '';
+        shuffle(foods);
+        foods.forEach((food, index) => {
+            const el = document.createElement('div');
+            el.className = 'draggable bg-white rounded-xl p-2 shadow-md border-2 border-gray-200 flex flex-col items-center justify-center absolute touch-none transition-transform hover:scale-105';
+            el.dataset.group = food.group;
+            el.innerHTML = `${food.img}<span class="food-text text-sm font-bold mt-1 text-gray-700">${food.name}</span>`;
+            
+            el.style.left = `${10 + (index * 80)}px`;
+            el.style.top = '20px';
+            pool.appendChild(el);
+
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            el.addEventListener('pointerdown', (e) => {
+                isDragging = true;
+                el.setPointerCapture(e.pointerId);
+                el.style.zIndex = 1000;
+                startX = e.clientX;
+                startY = e.clientY;
+                const rect = el.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+                
+                if (el.parentElement === pool) {
+                    pool.removeChild(el);
+                    document.body.appendChild(el);
+                    el.style.position = 'absolute';
+                    el.style.left = `${initialLeft}px`;
+                    el.style.top = `${initialTop}px`;
+                }
+            });
+
+            el.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                el.style.left = `${initialLeft + dx}px`;
+                el.style.top = `${initialTop + dy}px`;
+            });
+
+            el.addEventListener('pointerup', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                el.releasePointerCapture(e.pointerId);
+                el.style.zIndex = '';
+
+                const elRect = el.getBoundingClientRect();
+                const pRect = plateContainer.getBoundingClientRect();
+
+                const inPlate = (
+                    elRect.left > pRect.left &&
+                    elRect.right < pRect.right &&
+                    elRect.top > pRect.top &&
+                    elRect.bottom < pRect.bottom
+                );
+
+                if (inPlate) {
+                    plateContainer.appendChild(el);
+                    const localLeft = elRect.left - pRect.left;
+                    const localTop = elRect.top - pRect.top;
+                    el.style.position = 'absolute';
+                    el.style.left = `${localLeft}px`;
+                    el.style.top = `${localTop}px`;
+                    playDing();
+                } else {
+                    document.body.removeChild(el);
+                    pool.appendChild(el);
+                    el.style.position = 'relative';
+                    el.style.left = '0px';
+                    el.style.top = '0px';
+                }
+            });
+        });
+    }
+
+    document.getElementById('check-btn').addEventListener('click', () => {
+        const itemsOnPlate = plateContainer.querySelectorAll('.draggable');
+        if (itemsOnPlate.length === 0) {
+            const err = document.getElementById('error-msg');
+            err.style.opacity = '1';
+            setTimeout(() => err.style.opacity = '0', 2000);
+            return;
+        }
+
+        const groupsPresent = new Set();
+        itemsOnPlate.forEach(item => groupsPresent.add(item.dataset.group));
+
+        ["Grains", "Vegetables", "Fruits", "Proteins", "Dairy", "Nuts"].forEach(group => {
+            const checkEl = document.getElementById(`check-${group}`);
+            if (groupsPresent.has(group)) {
+                checkEl.classList.remove('bg-gray-200');
+                checkEl.classList.add('bg-green-500');
+                checkEl.innerHTML = '✓';
+            } else {
+                checkEl.classList.remove('bg-green-500');
+                checkEl.classList.add('bg-gray-200');
+                checkEl.innerHTML = '';
+            }
+        });
+
+        document.getElementById('nutrition-panel').classList.add('show');
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        document.getElementById('nutrition-panel').classList.remove('show');
+        const itemsOnPlate = plateContainer.querySelectorAll('.draggable');
+        itemsOnPlate.forEach(item => item.remove());
+        initGame();
+    });
+
+    document.getElementById('save-btn').addEventListener('click', () => {
+        const btn = document.getElementById('save-btn');
+        btn.innerText = "Saving...";
+        html2canvas(plateContainer).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'healthy_plate.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            btn.innerText = "Save Picture";
+        });
+    });
+
+    window.onload = initGame;
+</script>
+</body>
+</html>
