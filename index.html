@@ -6,16 +6,15 @@
 <title>Making a Healthy Plate</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
 <style>
     body {
-        font-family: 'Source Code Pro', monospace;
+        font-family: Arial, Helvetica, sans-serif;
         background-color: #f0fdf4;
         touch-action: none; 
         overflow: hidden;
     }
     .food-text {
-        font-family: 'Comic Sans MS', cursive, sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
     }
     .draggable {
         cursor: grab;
@@ -59,23 +58,23 @@
                     
                     <!-- Fruits Zone -->
                     <rect x="170" y="230" width="120" height="300" rx="30" fill="#f97316" stroke="#c2410c" stroke-width="6"/>
-                    <text x="230" y="370" font-family="'Comic Sans MS', cursive" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Fruits</text>
-                    <text x="230" y="405" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">水果類</text>
+                    <text x="230" y="370" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Fruits</text>
+                    <text x="230" y="405" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">水果類</text>
 
                     <!-- Vegetables Zone -->
                     <rect x="310" y="210" width="130" height="310" rx="30" fill="#84cc16" stroke="#4d7c0f" stroke-width="6"/>
-                    <text x="375" y="350" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">蔬菜類</text>
-                    <text x="375" y="385" font-family="'Comic Sans MS', cursive" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Vegetables</text>
+                    <text x="375" y="350" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">蔬菜類</text>
+                    <text x="375" y="385" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Vegetables</text>
 
                     <!-- Proteins Zone -->
                     <rect x="460" y="170" width="220" height="150" rx="30" fill="#ec4899" stroke="#be185d" stroke-width="6"/>
-                    <text x="570" y="235" font-family="'Comic Sans MS', cursive" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Proteins</text>
-                    <text x="570" y="270" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">豆魚蛋肉類</text>
+                    <text x="570" y="235" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Proteins</text>
+                    <text x="570" y="270" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">豆魚蛋肉類</text>
 
                     <!-- Grains Zone -->
                     <rect x="470" y="340" width="210" height="180" rx="30" fill="#eab308" stroke="#a16207" stroke-width="6"/>
-                    <text x="575" y="415" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">全穀雜糧類</text>
-                    <text x="575" y="450" font-family="'Comic Sans MS', cursive" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Grains</text>
+                    <text x="575" y="415" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">全穀雜糧類</text>
+                    <text x="575" y="450" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Grains</text>
 
                     <!-- Center Divider -->
                     <circle cx="430" cy="330" r="25" fill="#f3f4f6" stroke="#9ca3af" stroke-width="8"/>
@@ -83,15 +82,15 @@
                     <!-- Dairy Zone -->
                     <circle cx="150" cy="190" r="80" fill="#38bdf8" stroke="#0284c7" stroke-width="8"/>
                     <circle cx="150" cy="190" r="60" fill="none" stroke="#e0f2fe" stroke-width="4"/>
-                    <text x="150" y="180" font-family="'Comic Sans MS', cursive" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Dairy</text>
-                    <text x="150" y="215" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">乳品類</text>
+                    <text x="150" y="180" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#5d4037" text-anchor="middle">Dairy</text>
+                    <text x="150" y="215" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">乳品類</text>
 
                     <!-- Nuts and Seeds Zone -->
-                    <text x="390" y="25" font-family="'Comic Sans MS', cursive" font-size="32" font-weight="bold" fill="#5d4037" text-anchor="middle">Nuts and Seeds</text>
+                    <text x="390" y="25" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#5d4037" text-anchor="middle">Nuts and Seeds</text>
                     <circle cx="390" cy="110" r="75" fill="#d4a373" stroke="#8b5a2b" stroke-width="8"/>
                     <circle cx="390" cy="110" r="55" fill="none" stroke="#faedcd" stroke-width="4"/>
-                    <text x="390" y="105" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">堅果</text>
-                    <text x="390" y="135" font-family="'Comic Sans MS', cursive" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">種子類</text>
+                    <text x="390" y="105" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">堅果</text>
+                    <text x="390" y="135" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" opacity="0.8" text-anchor="middle">種子類</text>
 
                     <!-- Chopsticks -->
                     <line x1="720" y1="160" x2="750" y2="480" stroke="#4b5563" stroke-width="14" stroke-linecap="round"/>
@@ -176,7 +175,6 @@
         
         foods.forEach((food) => {
             const el = document.createElement('div');
-            // Scaled the cards down slightly so they fit cleanly in the bottom deck on iPads
             el.className = 'draggable bg-white rounded-2xl shadow border-2 border-gray-200 flex flex-col items-center relative touch-none transition-transform hover:scale-105 overflow-hidden w-24 h-28 sm:w-28 sm:h-32 shrink-0';
             el.dataset.group = food.group;
             
@@ -185,7 +183,7 @@
                     <div class="absolute inset-0" style="background-image: url('${food.file}'); background-size: 280%; background-position: center; background-repeat: no-repeat; mix-blend-mode: multiply;"></div>
                 </div>
                 <div class="w-full text-center pb-2 pt-1 bg-white z-10 relative pointer-events-none border-t border-gray-50">
-                    <span class="food-text font-bold text-gray-800 text-lg sm:text-xl leading-none">${food.name}</span>
+                    <span class="food-text font-bold text-gray-800 text-lg sm:text-xl leading-none tracking-wide">${food.name}</span>
                 </div>
             `;
             
