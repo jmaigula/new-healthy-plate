@@ -20,6 +20,7 @@
     .draggable {
         cursor: grab;
         touch-action: none;
+        user-select: none;
     }
     .draggable:active {
         cursor: grabbing;
@@ -142,7 +143,7 @@
     const imgClasses = "w-full h-full object-contain pointer-events-none";
     const imgStyle = "transform: scale(3.5);";
     
-    // Exactly as you provided it!
+    // Potato and Corn removed. Chicken, Bread, and Milk added!
     const foods = [
         { name: "Rice", group: "Grains", img: `<img src="1.png" alt="Rice" class="${imgClasses}" style="${imgStyle}">` },
         { name: "Broccoli", group: "Vegetables", img: `<img src="2.png" alt="Broccoli" class="${imgClasses}" style="${imgStyle}">` },
@@ -154,8 +155,9 @@
         { name: "Steak", group: "Proteins", img: `<img src="8.png" alt="Steak" class="${imgClasses}" style="${imgStyle}">` },
         { name: "Apple", group: "Fruits", img: `<img src="9.png" alt="Apple" class="${imgClasses}" style="${imgStyle}">` },
         { name: "Cabbage", group: "Vegetables", img: `<img src="10.png" alt="Cabbage" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Potato", group: "Vegetables", img: `<img src="11.png" alt="Potato" class="${imgClasses}" style="${imgStyle}">` },
-        { name: "Corn", group: "Vegetables", img: `<img src="12.png" alt="Corn" class="${imgClasses}" style="${imgStyle}">` }
+        { name: "Chicken", group: "Proteins", img: `<img src="13.png" alt="Chicken" class="${imgClasses}" style="${imgStyle}">` },
+        { name: "Bread", group: "Grains", img: `<img src="14.png" alt="Bread" class="${imgClasses}" style="${imgStyle}">` },
+        { name: "Milk", group: "Dairy", img: `<img src="15.png" alt="Milk" class="${imgClasses}" style="${imgStyle}">` }
     ];
 
     const pool = document.getElementById('food-pool');
@@ -178,10 +180,10 @@
             el.dataset.group = food.group;
             
             el.innerHTML = `
-                <div class="w-full flex-grow flex items-center justify-center overflow-hidden pt-4 pb-2">
+                <div class="w-full flex-grow flex items-center justify-center overflow-hidden pt-4 pb-2 pointer-events-none">
                     ${food.img}
                 </div>
-                <div class="w-full text-center pb-3 pt-1 bg-white z-10 relative">
+                <div class="w-full text-center pb-3 pt-1 bg-white z-10 relative pointer-events-none">
                     <span class="food-text font-bold text-gray-800 text-2xl sm:text-3xl">${food.name}</span>
                 </div>
             `;
@@ -192,8 +194,7 @@
             let startX, startY, initialLeft, initialTop;
 
             el.addEventListener('pointerdown', (e) => {
-                if (isDragging) return; // Prevents the double-click explosion bug
-                
+                if (isDragging) return;
                 isDragging = true;
                 el.setPointerCapture(e.pointerId);
                 el.style.zIndex = 1000;
@@ -204,7 +205,6 @@
                 initialLeft = rect.left;
                 initialTop = rect.top;
                 
-                // Fix #1: Allow picking up from ANYWHERE, not just the pool
                 el.style.width = `${rect.width}px`;
                 el.style.height = `${rect.height}px`;
                 
@@ -235,7 +235,6 @@
                 const elRect = el.getBoundingClientRect();
                 const pRect = plateContainer.getBoundingClientRect();
 
-                // Fix #3: Use the CENTER of the card for the drop zone check
                 const centerX = elRect.left + (elRect.width / 2);
                 const centerY = elRect.top + (elRect.height / 2);
 
@@ -258,7 +257,6 @@
                     document.body.removeChild(el);
                     pool.appendChild(el);
                     
-                    // Fix #2: Completely clear the styles so Tailwind card dimensions take over, preventing it from vanishing
                     el.style.position = '';
                     el.style.left = '';
                     el.style.top = '';
@@ -267,7 +265,6 @@
                 }
             });
             
-            // Extra safeguard for double clicking
             el.addEventListener('dblclick', (e) => e.preventDefault());
         });
     }
